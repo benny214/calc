@@ -9,8 +9,8 @@
           <button 
             v-for="button in buttons"
             :key="button.value"
-            @click=""
-            :class="'calc__btn' ">
+            @click="update(button.value)"
+            :class="`calc__btn --${button.type || 'default'}` ">
             {{ button.value }}
           </button>
         </div>
@@ -23,10 +23,11 @@ import { ref } from 'vue'
 
 export default {
   setup() {
-      const display = ref('0');
+    //data
+      const display = ref('');
       const buttons = [
         {value: 'AC', type: 'clear'},
-        {value: 'Del', type: 'delete'},
+        {value: 'DEL', type: 'delete'},
         {value: '.', type: 'operator'},
         {value: '/', type: 'operator'},
 
@@ -50,9 +51,28 @@ export default {
         {value: '0'},
         {value: '=', type: 'equals'},
       ]
+
+      //methods
+      const update = (value) => {
+        if (value === 'AC') {
+          return display.value = '';
+        }
+
+        if (value === 'DEL') {
+          return display.value = display.value.slice(0, -1);
+        }
+
+        if (value === '=') {  
+          return display.value = eval(display.value);
+        }
+
+        display.value += value;
+      }
+
       return {
         display,
-        buttons
+        buttons,
+        update
       }
     }
   }
